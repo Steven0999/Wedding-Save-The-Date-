@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save the Date | 25th March 2027</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        wedding: {
+                            gold: '#C5A880',
+                            dark: '#2C3531',
+                            light: '#F4F1EA',
+                            accent: '#8B5A5A'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F4F1EA;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(28,100%,94%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, hsla(356,40%,90%,1) 0, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; opacity: 0; }
+        .delay-2 { animation-delay: 0.4s; opacity: 0; }
+        .delay-3 { animation-delay: 0.6s; opacity: 0; }
+        .delay-4 { animation-delay: 0.8s; opacity: 0; }
+
+        .venue-link:hover {
+            color: #8B5A5A;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .qr-container {
+            border: 1px solid rgba(197, 168, 128, 0.3);
+            padding: 10px;
+            background: white;
+            display: inline-block;
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .qr-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-8 font-sans text-wedding-dark selection:bg-wedding-gold selection:text-white">
+
+    <main class="glass-card w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden relative animate-fade-in">
+        
+        <div class="h-2 w-full bg-gradient-to-r from-wedding-gold via-wedding-accent to-wedding-gold opacity-80"></div>
+
+        <div class="p-8 sm:p-14 text-center">
+            
+            <div id="guestGreetingContainer" class="mb-8 text-sm sm:text-base font-medium tracking-widest uppercase text-wedding-gold delay-1 animate-fade-in hidden">
+                For <span id="guestName" class="border-b border-wedding-gold pb-1"></span>
+            </div>
+
+            <p class="uppercase tracking-[0.3em] text-xs sm:text-sm font-semibold mb-6 text-gray-500 delay-1 animate-fade-in">
+                Please Save the Date
+            </p>
+
+            <h1 class="font-serif text-5xl sm:text-6xl md:text-7xl mb-6 leading-tight delay-1 animate-fade-in">
+                Caitriona <span class="text-wedding-gold italic font-light">&amp;</span> Steven
+            </h1>
+
+            <!-- Informal Message -->
+            <div class="max-w-md mx-auto mb-8 delay-1 animate-fade-in">
+                <p class="text-lg text-gray-600 font-serif italic leading-relaxed">
+                    We’re so excited to start our next chapter and would love for you to join us. 
+                    Please save the date to celebrate our wedding!
+                </p>
+            </div>
+
+            <div class="my-10 sm:my-14 delay-2 animate-fade-in relative">
+                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-wedding-gold/10 rounded-full blur-2xl -z-10"></div>
+                
+                <div class="font-serif text-6xl sm:text-8xl text-wedding-accent mb-2">
+                    25.03.27
+                </div>
+                <div class="text-xl sm:text-2xl font-serif tracking-widest text-gray-700">
+                    25th March 2027
+                </div>
+            </div>
+
+            <!-- Clickable Venue Location -->
+            <div class="mb-8 delay-3 animate-fade-in">
+                <a href="https://www.rivervalebarn.co.uk/" target="_blank" class="venue-link text-lg sm:text-xl tracking-wide font-medium inline-block transition-colors duration-300">
+                    <i class="fa-solid fa-location-dot text-wedding-gold mr-2"></i>
+                    Rivervale Barn, Yateley
+                </a>
+            </div>
+
+            <div class="mb-12 delay-3 animate-fade-in">
+                <p class="font-serif italic text-xl sm:text-2xl text-gray-500">
+                    Formal wedding invitations to follow
+                </p>
+            </div>
+
+            <!-- Calendar Section Header -->
+            <div class="mb-6 delay-4 animate-fade-in">
+                <p class="font-serif italic text-xl text-gray-600">
+                    Scan to add our day to your calendar
+                </p>
+            </div>
+
+            <!-- Dual QR Codes Section -->
+            <div class="flex flex-row justify-center items-center gap-6 sm:gap-12 mb-10 delay-4 animate-fade-in">
+                
+                <!-- Google QR -->
+                <div class="flex flex-col items-center">
+                    <div class="qr-container mb-3 shadow-sm">
+                        <img id="googleQrImg" src="" alt="Scan for Google Calendar" class="w-28 h-28 sm:w-36 sm:h-36 object-contain">
+                    </div>
+                    <span class="text-xs sm:text-sm font-medium tracking-wider uppercase text-wedding-dark flex items-center gap-2">
+                        <i class="fa-brands fa-google text-wedding-gold"></i> Google
+                    </span>
+                </div>
+
+                <!-- Apple QR -->
+                <div class="flex flex-col items-center">
+                    <div class="qr-container mb-3 shadow-sm">
+                        <img id="appleQrImg" src="" alt="Scan for Apple Calendar" class="w-28 h-28 sm:w-36 sm:h-36 object-contain">
+                    </div>
+                    <span class="text-xs sm:text-sm font-medium tracking-wider uppercase text-wedding-dark flex items-center gap-2">
+                        <i class="fa-brands fa-apple text-wedding-gold"></i> Apple
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="border-t border-gray-200 pt-8 mt-4 delay-4 animate-fade-in flex flex-col gap-4">
+                <a href="#" class="text-wedding-gold hover:text-wedding-accent transition-colors font-medium tracking-widest uppercase text-sm inline-flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-globe"></i> Visit Our Wedding Website
+                </a>
+                
+                <p class="text-sm text-gray-500 mt-2">
+                    Questions? Contact us at <br class="sm:hidden"/>
+                    <a href="mailto:hello@caitrionaandsteven.com" class="text-wedding-dark hover:underline font-medium">
+                        <i class="fa-regular fa-envelope mr-1"></i> hello@caitrionaandsteven.com
+                    </a>
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const guestName = urlParams.get('guest');
+            
+            if (guestName) {
+                const guestElement = document.getElementById('guestName');
+                const guestContainer = document.getElementById('guestGreetingContainer');
+                guestElement.textContent = decodeURIComponent(guestName).replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                guestContainer.classList.remove('hidden');
+            }
+
+            const eventDetails = {
+                title: 'Wedding of Caitriona & Steven',
+                description: 'Save the date for the wedding of Caitriona & Steven. Rivervale Barn, Yateley.',
+                location: 'Rivervale Barn, Mill Lane, Yateley, Hampshire, GU46 7SS, UK',
+                startDate: '20270325',
+                endDate: '20270326'
+            };
+
+            // 1. Generate Google Calendar QR Code
+            // Formats a link that automatically opens a pre-filled Google Calendar event
+            const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventDetails.title)}&dates=${eventDetails.startDate}/${eventDetails.endDate}&details=${encodeURIComponent(eventDetails.description)}&location=${encodeURIComponent(eventDetails.location)}`;
+            const googleQrUrl = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(googleCalUrl)}&choe=UTF-8`;
+            document.getElementById('googleQrImg').src = googleQrUrl;
+
+            // 2. Generate Apple (Native) Calendar QR Code
+            // Embeds raw vCalendar data directly into the QR so iOS camera recognizes it immediately as an Event
+            const vEventString = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//Caitriona and Steven Wedding//EN',
+                'CALSCALE:GREGORIAN',
+                'BEGIN:VEVENT',
+                `DTSTART;VALUE=DATE:${eventDetails.startDate}`,
+                `DTEND;VALUE=DATE:${eventDetails.endDate}`,
+                `SUMMARY:${eventDetails.title}`,
+                `DESCRIPTION:${eventDetails.description}`,
+                `LOCATION:${eventDetails.location}`,
+                'STATUS:CONFIRMED',
+                'SEQUENCE:0',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\n'); // Standard newline works best for QR encoded strings
+
+            const appleQrUrl = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(vEventString)}&choe=UTF-8`;
+            document.getElementById('appleQrImg').src = appleQrUrl;
+        });
+    </script>
+</body>
+</html>
+
+
