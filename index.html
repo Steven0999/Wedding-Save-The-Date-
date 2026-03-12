@@ -16,6 +16,9 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- QRCode.js — generates QR codes entirely in-browser, no external image API needed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -77,14 +80,33 @@
             border: 1px solid rgba(197, 168, 128, 0.3);
             padding: 10px;
             background: white;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 12px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* Fixed size so the QR always fits cleanly */
+            width: 148px;
+            height: 148px;
+        }
+
+        @media (min-width: 640px) {
+            .qr-container {
+                width: 176px;
+                height: 176px;
+            }
         }
 
         .qr-container:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Make the canvas/img QRCode.js injects fill its container */
+        .qr-container canvas,
+        .qr-container img {
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
@@ -111,7 +133,7 @@
             <!-- Informal Message -->
             <div class="max-w-md mx-auto mb-8 delay-1 animate-fade-in">
                 <p class="text-lg text-gray-600 font-serif italic leading-relaxed">
-                    We’re so excited to start our next chapter and would love for you to join us. 
+                    We're so excited to start our next chapter and would love for you to join us. 
                     Please save the date to celebrate our wedding!
                 </p>
             </div>
@@ -153,9 +175,7 @@
                 
                 <!-- Google QR -->
                 <div class="flex flex-col items-center">
-                    <div class="qr-container mb-3 shadow-sm">
-                        <img id="googleQrImg" src="" alt="Scan for Google Calendar" class="w-28 h-28 sm:w-36 sm:h-36 object-contain">
-                    </div>
+                    <div class="qr-container mb-3 shadow-sm" id="googleQrCode"></div>
                     <span class="text-xs sm:text-sm font-medium tracking-wider uppercase text-wedding-dark flex items-center gap-2">
                         <i class="fa-brands fa-google text-wedding-gold"></i> Google
                     </span>
@@ -163,9 +183,7 @@
 
                 <!-- Apple QR -->
                 <div class="flex flex-col items-center">
-                    <div class="qr-container mb-3 shadow-sm">
-                        <img id="appleQrImg" src="" alt="Scan for Apple Calendar" class="w-28 h-28 sm:w-36 sm:h-36 object-contain">
-                    </div>
+                    <div class="qr-container mb-3 shadow-sm" id="appleQrCode"></div>
                     <span class="text-xs sm:text-sm font-medium tracking-wider uppercase text-wedding-dark flex items-center gap-2">
                         <i class="fa-brands fa-apple text-wedding-gold"></i> Apple
                     </span>
@@ -191,6 +209,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // ── Guest name from URL param ──────────────────────────────────
             const urlParams = new URLSearchParams(window.location.search);
             const guestName = urlParams.get('guest');
             
@@ -201,6 +220,7 @@
                 guestContainer.classList.remove('hidden');
             }
 
+            // ── Event details ──────────────────────────────────────────────
             const eventDetails = {
                 title: 'Wedding of Caitriona & Steven',
                 description: 'Save the date for the wedding of Caitriona & Steven. Rivervale Barn, Yateley.',
@@ -209,36 +229,57 @@
                 endDate: '20270326'
             };
 
-            // 1. Generate Google Calendar QR Code
-            // Formats a link that automatically opens a pre-filled Google Calendar event
-            const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventDetails.title)}&dates=${eventDetails.startDate}/${eventDetails.endDate}&details=${encodeURIComponent(eventDetails.description)}&location=${encodeURIComponent(eventDetails.location)}`;
-            const googleQrUrl = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(googleCalUrl)}&choe=UTF-8`;
-            document.getElementById('googleQrImg').src = googleQrUrl;
+            // ── QR size: use 128 on small screens, 156 on larger ──────────
+            const qrSize = window.innerWidth >= 640 ? 156 : 128;
 
-            // 2. Generate Apple (Native) Calendar QR Code
-            // Embeds raw vCalendar data directly into the QR so iOS camera recognizes it immediately as an Event
+            // ── 1. Google Calendar QR ─────────────────────────────────────
+            const googleCalUrl = [
+                'https://calendar.google.com/calendar/render?action=TEMPLATE',
+                '&text=' + encodeURIComponent(eventDetails.title),
+                '&dates=' + eventDetails.startDate + '/' + eventDetails.endDate,
+                '&details=' + encodeURIComponent(eventDetails.description),
+                '&location=' + encodeURIComponent(eventDetails.location)
+            ].join('');
+
+            new QRCode(document.getElementById('googleQrCode'), {
+                text: googleCalUrl,
+                width: qrSize,
+                height: qrSize,
+                colorDark: '#2C3531',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+
+            // ── 2. Apple / iCal QR (vCalendar data embedded directly) ─────
+            // The iOS camera app natively recognises BEGIN:VCALENDAR payloads
+            // and offers to add the event — no app required.
             const vEventString = [
                 'BEGIN:VCALENDAR',
                 'VERSION:2.0',
                 'PRODID:-//Caitriona and Steven Wedding//EN',
                 'CALSCALE:GREGORIAN',
                 'BEGIN:VEVENT',
-                `DTSTART;VALUE=DATE:${eventDetails.startDate}`,
-                `DTEND;VALUE=DATE:${eventDetails.endDate}`,
-                `SUMMARY:${eventDetails.title}`,
-                `DESCRIPTION:${eventDetails.description}`,
-                `LOCATION:${eventDetails.location}`,
+                'DTSTART;VALUE=DATE:' + eventDetails.startDate,
+                'DTEND;VALUE=DATE:' + eventDetails.endDate,
+                'SUMMARY:' + eventDetails.title,
+                'DESCRIPTION:' + eventDetails.description,
+                'LOCATION:' + eventDetails.location,
                 'STATUS:CONFIRMED',
                 'SEQUENCE:0',
                 'END:VEVENT',
                 'END:VCALENDAR'
-            ].join('\n'); // Standard newline works best for QR encoded strings
+            ].join('\r\n'); // RFC 5545 requires CRLF line endings
 
-            const appleQrUrl = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(vEventString)}&choe=UTF-8`;
-            document.getElementById('appleQrImg').src = appleQrUrl;
+            new QRCode(document.getElementById('appleQrCode'), {
+                text: vEventString,
+                width: qrSize,
+                height: qrSize,
+                colorDark: '#2C3531',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
         });
     </script>
 </body>
 </html>
-
 
