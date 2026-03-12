@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Save the Date | 25th March 2027</title>
-    
+
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-    
+
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- QRCode.js — generates QR codes entirely in-browser, no external image API needed -->
+    <!-- QRCode.js — generates QR codes entirely in-browser -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <!-- html2canvas — for screenshot functionality -->
@@ -44,12 +44,23 @@
     </script>
 
     <style>
+        /* ── Full viewport, no scroll ── */
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
             background-color: #F4F1EA;
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(28,100%,94%,1) 0, transparent 50%), 
+            background-image:
+                radial-gradient(at 0% 0%, hsla(28,100%,94%,1) 0, transparent 50%),
                 radial-gradient(at 100% 100%, hsla(356,40%,90%,1) 0, transparent 50%);
             background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5vh 1.5vw;
+            box-sizing: border-box;
         }
 
         .glass-card {
@@ -60,22 +71,16 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes modalIn {
             from { opacity: 0; transform: scale(0.92) translateY(16px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .animate-fade-in {
-            animation: fadeInUp 1s ease-out forwards;
-        }
-
-        .modal-card {
-            animation: modalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
+        .animate-fade-in { animation: fadeInUp 1s ease-out forwards; }
+        .modal-card       { animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
 
         .delay-1 { animation-delay: 0.2s; opacity: 0; }
         .delay-2 { animation-delay: 0.4s; opacity: 0; }
@@ -85,47 +90,78 @@
         .venue-link:hover {
             color: #8B5A5A;
             text-decoration: underline;
-            text-underline-offset: 4px;
+            text-underline-offset: 3px;
         }
 
+        /* ── QR containers — sized via CSS variable set by JS ── */
         .qr-container {
-            border: 1px solid rgba(197, 168, 128, 0.3);
-            padding: 10px;
+            border: 1px solid rgba(197,168,128,0.3);
+            padding: 6px;
             background: white;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
+            border-radius: 10px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            width: 148px;
-            height: 148px;
+            width:  var(--qr-box, 100px);
+            height: var(--qr-box, 100px);
+            flex-shrink: 0;
         }
-
-        @media (min-width: 640px) {
-            .qr-container {
-                width: 176px;
-                height: 176px;
-            }
-        }
-
         .qr-container:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1);
         }
-
         .qr-container canvas,
         .qr-container img {
             width: 100% !important;
             height: 100% !important;
         }
 
-        /* Name input styling */
+        /* ── Main card — fills available viewport height ── */
+        #cardMain {
+            width: 100%;
+            max-width: 600px;
+            /* Fill almost all viewport height */
+            height: calc(100vh - 3vh);
+            max-height: 820px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Inner padding block — grows to fill card */
+        .card-inner {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: clamp(12px, 2.5vh, 32px) clamp(16px, 3vw, 48px);
+            text-align: center;
+        }
+
+        /* ── Fluid typography using clamp() ── */
+        .txt-eyebrow   { font-size: clamp(0.55rem, 1.1vh, 0.75rem); }
+        .txt-names     { font-size: clamp(2rem,   6vh,   4rem);   line-height: 1.1; }
+        .txt-to        { font-size: clamp(0.9rem, 2vh,   1.35rem); }
+        .txt-message   { font-size: clamp(0.75rem, 1.6vh, 1rem);  line-height: 1.5; }
+        .txt-date-big  { font-size: clamp(2.4rem, 7vh,   5rem);   line-height: 1; }
+        .txt-date-sub  { font-size: clamp(0.85rem, 1.8vh, 1.25rem); }
+        .txt-venue     { font-size: clamp(0.8rem,  1.7vh, 1.1rem); }
+        .txt-invites   { font-size: clamp(0.75rem, 1.5vh, 1rem);  }
+        .txt-cal-label { font-size: clamp(0.7rem,  1.4vh, 0.95rem); }
+        .txt-qr-label  { font-size: clamp(0.55rem, 1vh,   0.75rem); }
+        .txt-footer    { font-size: clamp(0.6rem,  1.1vh, 0.8rem); }
+
+        /* spacing helpers */
+        .gap-section { margin-bottom: clamp(4px, 1.2vh, 14px); }
+
+        /* Name input */
         .name-input {
-            border: 1px solid rgba(197, 168, 128, 0.5);
+            border: 1px solid rgba(197,168,128,0.5);
             border-radius: 8px;
-            padding: 10px 14px;
+            padding: 9px 13px;
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: #2C3531;
             background: rgba(255,255,255,0.9);
             outline: none;
@@ -134,48 +170,45 @@
         }
         .name-input:focus {
             border-color: #C5A880;
-            box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.2);
+            box-shadow: 0 0 0 3px rgba(197,168,128,0.2);
         }
 
-        /* Screenshot button — fixed, outside the card */
+        /* Screenshot button */
         .screenshot-btn {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
+            bottom: 16px;
+            right: 16px;
             background: #2C3531;
             color: #C5A880;
             border: 1px solid rgba(197,168,128,0.4);
             border-radius: 50px;
-            padding: 10px 20px;
+            padding: 8px 16px;
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.75rem;
+            font-size: 0.68rem;
             font-weight: 500;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            gap: 7px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.18);
             transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
             z-index: 100;
         }
         .screenshot-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.22);
             background: #3a4540;
         }
         .screenshot-btn:active { transform: translateY(0); }
-        .screenshot-btn.loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
+        .screenshot-btn.loading { opacity: 0.7; pointer-events: none; }
 
-        /* Modal overlay */
+        /* Modal */
         #nameModal {
             position: fixed;
             inset: 0;
-            background: rgba(44, 53, 49, 0.55);
+            background: rgba(44,53,49,0.55);
             backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
@@ -183,175 +216,138 @@
             z-index: 200;
             padding: 1rem;
         }
-
-        /* Fade-out transition for modal */
         #nameModal.hiding {
             opacity: 0;
             transition: opacity 0.25s ease;
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 sm:p-8 font-sans text-wedding-dark selection:bg-wedding-gold selection:text-white">
+<body class="font-sans text-wedding-dark selection:bg-wedding-gold selection:text-white">
 
-    <!-- ── Name Entry Modal ───────────────────────────────────────────── -->
+    <!-- ── Name Entry Modal ── -->
     <div id="nameModal">
-        <div class="modal-card glass-card rounded-2xl shadow-2xl p-8 sm:p-10 w-full max-w-sm text-center">
+        <div class="modal-card glass-card rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center">
             <div class="mb-1 text-xs font-semibold tracking-widest uppercase text-wedding-gold">Caitriona &amp; Steven</div>
-            <h2 class="font-serif text-3xl sm:text-4xl mb-2 text-wedding-dark">Save the Date</h2>
-            <p class="font-serif italic text-gray-500 text-base mb-6">Who should we address this to?</p>
-
-            <input
-                id="modalNameInput"
-                type="text"
-                class="name-input mb-3"
-                placeholder="e.g. Sarah &amp; James"
-                autocomplete="off"
-            />
-            <p class="text-xs text-gray-400 mb-6">Enter one name or multiple, e.g. <em>The Smith Family</em></p>
-
+            <h2 class="font-serif text-3xl mb-2 text-wedding-dark">Save the Date</h2>
+            <p class="font-serif italic text-gray-500 text-base mb-5">Who should we address this to?</p>
+            <input id="modalNameInput" type="text" class="name-input mb-2" placeholder="e.g. Sarah &amp; James" autocomplete="off"/>
+            <p class="text-xs text-gray-400 mb-5">Enter one name or multiple, e.g. <em>The Smith Family</em></p>
             <div class="flex gap-3">
-                <button
-                    id="modalSkipBtn"
-                    class="flex-1 py-2.5 px-4 rounded-lg border border-gray-200 text-gray-500 text-sm font-medium hover:bg-gray-50 transition-colors"
-                >
-                    Skip
-                </button>
-                <button
-                    id="modalConfirmBtn"
-                    class="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium tracking-wide transition-colors"
-                    style="background:#C5A880; color:#fff;"
-                    onmouseover="this.style.background='#b8976e'" onmouseout="this.style.background='#C5A880'"
-                >
-                    Add Name
-                </button>
+                <button id="modalSkipBtn" class="flex-1 py-2.5 px-4 rounded-lg border border-gray-200 text-gray-500 text-sm font-medium hover:bg-gray-50 transition-colors">Skip</button>
+                <button id="modalConfirmBtn" class="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium tracking-wide transition-colors" style="background:#C5A880;color:#fff;" onmouseover="this.style.background='#b8976e'" onmouseout="this.style.background='#C5A880'">Add Name</button>
             </div>
         </div>
     </div>
 
-    <!-- ── Screenshot Button ──────────────────────────────────────────── -->
+    <!-- ── Screenshot Button ── -->
     <button class="screenshot-btn" id="screenshotBtn">
         <i class="fa-regular fa-image"></i> Save as Image
     </button>
 
-    <!-- ── Main Card ──────────────────────────────────────────────────── -->
-    <main id="cardMain" class="glass-card w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden relative animate-fade-in">
-        
-        <div class="h-2 w-full bg-gradient-to-r from-wedding-gold via-wedding-accent to-wedding-gold opacity-80"></div>
+    <!-- ── Main Card ── -->
+    <main id="cardMain" class="glass-card rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
 
-        <div class="p-8 sm:p-14 text-center">
-            
-            <!-- Legacy URL-param guest container -->
-            <div id="guestGreetingContainer" class="mb-8 text-sm sm:text-base font-medium tracking-widest uppercase text-wedding-gold delay-1 animate-fade-in hidden">
-                For <span id="guestName" class="border-b border-wedding-gold pb-1"></span>
-            </div>
+        <div class="h-1.5 w-full bg-gradient-to-r from-wedding-gold via-wedding-accent to-wedding-gold opacity-80" style="flex-shrink:0;"></div>
 
-            <p class="uppercase tracking-[0.3em] text-xs sm:text-sm font-semibold mb-6 text-gray-500 delay-1 animate-fade-in">
-                Please Save the Date
-            </p>
+        <div class="card-inner">
 
-            <h1 class="font-serif text-5xl sm:text-6xl md:text-7xl mb-4 leading-tight delay-1 animate-fade-in">
-                Caitriona <span class="text-wedding-gold italic font-light">&amp;</span> Steven
-            </h1>
+            <!-- TOP: eyebrow + names + To line -->
+            <div>
+                <!-- Legacy URL-param guest container -->
+                <div id="guestGreetingContainer" class="hidden txt-eyebrow font-medium tracking-widest uppercase text-wedding-gold delay-1 animate-fade-in" style="margin-bottom:0.4em;">
+                    For <span id="guestName" class="border-b border-wedding-gold pb-0.5"></span>
+                </div>
 
-            <!-- ── "To: [name]" — left-aligned, below title, above message ── -->
-            <div id="guestToLine" class="mb-6 delay-1 animate-fade-in hidden" style="text-align:left;">
-                <span class="font-serif italic text-xl sm:text-2xl" style="color:#C5A880;">To: </span><span id="guestToName" class="font-serif italic text-xl sm:text-2xl text-wedding-dark"></span>
-            </div>
-
-            <!-- Informal Message -->
-            <div class="max-w-md mx-auto mb-8 delay-1 animate-fade-in">
-                <p class="text-lg text-gray-600 font-serif italic leading-relaxed">
-                    We're so excited to start our next chapter and would love for you to join us. 
-                    Please save the date to celebrate our wedding!
+                <p class="txt-eyebrow uppercase tracking-[0.3em] font-semibold text-gray-500 delay-1 animate-fade-in gap-section">
+                    Please Save the Date
                 </p>
-            </div>
 
-            <div class="my-10 sm:my-14 delay-2 animate-fade-in relative">
-                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-wedding-gold/10 rounded-full blur-2xl -z-10"></div>
-                
-                <div class="font-serif text-6xl sm:text-8xl text-wedding-accent mb-2">
-                    25.03.27
-                </div>
-                <div class="text-xl sm:text-2xl font-serif tracking-widest text-gray-700">
-                    25th March 2027
-                </div>
-            </div>
+                <h1 class="txt-names font-serif delay-1 animate-fade-in gap-section">
+                    Caitriona <span class="text-wedding-gold italic font-light">&amp;</span> Steven
+                </h1>
 
-            <!-- Clickable Venue Location -->
-            <div class="mb-8 delay-3 animate-fade-in">
-                <a href="https://www.rivervalebarn.co.uk/" target="_blank" class="venue-link text-lg sm:text-xl tracking-wide font-medium inline-block transition-colors duration-300">
-                    <i class="fa-solid fa-location-dot text-wedding-gold mr-2"></i>
-                    Rivervale Barn, Yateley
-                </a>
-            </div>
-
-            <div class="mb-12 delay-3 animate-fade-in">
-                <p class="font-serif italic text-xl sm:text-2xl text-gray-500">
-                    Formal wedding invitations to follow
-                </p>
-            </div>
-
-            <!-- Calendar Section Header -->
-            <div class="mb-6 delay-4 animate-fade-in">
-                <p class="font-serif italic text-xl text-gray-600">
-                    Scan to add our day to your calendar
-                </p>
-            </div>
-
-            <!-- Dual QR Codes Section -->
-            <div class="flex flex-row justify-center items-center gap-6 sm:gap-12 mb-10 delay-4 animate-fade-in">
-                
-                <!-- Google QR -->
-                <div class="flex flex-col items-center">
-                    <div class="qr-container mb-3 shadow-sm" id="googleQrCode"></div>
-                    <span class="text-xs sm:text-sm font-medium tracking-wider uppercase text-wedding-dark flex items-center gap-2">
-                        <i class="fa-brands fa-google text-wedding-gold"></i> Google
-                    </span>
+                <!-- To: line — left-aligned -->
+                <div id="guestToLine" class="hidden delay-1 animate-fade-in gap-section" style="text-align:left;">
+                    <span class="txt-to font-serif italic" style="color:#C5A880;">To: </span><span id="guestToName" class="txt-to font-serif italic text-wedding-dark"></span>
                 </div>
 
-                <!-- Apple QR -->
-                <div class="flex flex-col items-center">
-                    <div class="qr-container mb-3 shadow-sm" id="appleQrCode"></div>
-                    <span class="text-xs sm:text-sm font-medium tracking-wider uppercase text-wedding-dark flex items-center gap-2">
-                        <i class="fa-brands fa-apple text-wedding-gold"></i> Apple
-                    </span>
+                <!-- Informal message -->
+                <div class="max-w-md mx-auto delay-1 animate-fade-in gap-section">
+                    <p class="txt-message text-gray-600 font-serif italic leading-relaxed">
+                        We're so excited to start our next chapter and would love for you to join us.
+                        Please save the date to celebrate our wedding!
+                    </p>
                 </div>
-
             </div>
 
-            <div class="border-t border-gray-200 pt-8 mt-4 delay-4 animate-fade-in flex flex-col gap-4">
-                <a href="#" class="text-wedding-gold hover:text-wedding-accent transition-colors font-medium tracking-widest uppercase text-sm inline-flex items-center justify-center gap-2">
+            <!-- MIDDLE: date -->
+            <div class="relative delay-2 animate-fade-in" style="flex-shrink:0;">
+                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-wedding-gold/10 rounded-full blur-2xl -z-10"></div>
+                <div class="txt-date-big font-serif text-wedding-accent" style="margin-bottom:0.15em;">25.03.27</div>
+                <div class="txt-date-sub font-serif tracking-widest text-gray-700">25th March 2027</div>
+            </div>
+
+            <!-- VENUE + invitations -->
+            <div>
+                <div class="delay-3 animate-fade-in gap-section">
+                    <a href="https://www.rivervalebarn.co.uk/" target="_blank" class="venue-link txt-venue tracking-wide font-medium inline-block transition-colors duration-300">
+                        <i class="fa-solid fa-location-dot text-wedding-gold mr-1"></i>Rivervale Barn, Yateley
+                    </a>
+                </div>
+                <div class="delay-3 animate-fade-in gap-section">
+                    <p class="txt-invites font-serif italic text-gray-500">Formal wedding invitations to follow</p>
+                </div>
+            </div>
+
+            <!-- QR CODES -->
+            <div class="delay-4 animate-fade-in">
+                <p class="txt-cal-label font-serif italic text-gray-600" style="margin-bottom:0.6em;">Scan to add our day to your calendar</p>
+                <div class="flex flex-row justify-center items-center gap-6 sm:gap-10">
+                    <div class="flex flex-col items-center gap-1.5">
+                        <div class="qr-container shadow-sm" id="googleQrCode"></div>
+                        <span class="txt-qr-label font-medium tracking-wider uppercase text-wedding-dark flex items-center gap-1.5">
+                            <i class="fa-brands fa-google text-wedding-gold"></i> Google
+                        </span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <div class="qr-container shadow-sm" id="appleQrCode"></div>
+                        <span class="txt-qr-label font-medium tracking-wider uppercase text-wedding-dark flex items-center gap-1.5">
+                            <i class="fa-brands fa-apple text-wedding-gold"></i> Apple
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="delay-4 animate-fade-in" style="border-top:1px solid #e5e7eb; padding-top: clamp(6px,1.2vh,14px); display:flex; flex-direction:column; gap:4px;">
+                <a href="#" class="txt-footer text-wedding-gold hover:text-wedding-accent transition-colors font-medium tracking-widest uppercase inline-flex items-center justify-center gap-2">
                     <i class="fa-solid fa-globe"></i> Visit Our Wedding Website
                 </a>
-                
-                <p class="text-sm text-gray-500 mt-2">
-                    Questions? Contact us at <br class="sm:hidden"/>
+                <p class="txt-footer text-gray-500">
+                    Questions? Contact us at&nbsp;
                     <a href="mailto:hello@caitrionaandsteven.com" class="text-wedding-dark hover:underline font-medium">
-                        <i class="fa-regular fa-envelope mr-1"></i> hello@caitrionaandsteven.com
+                        <i class="fa-regular fa-envelope mr-0.5"></i>hello@caitrionaandsteven.com
                     </a>
                 </p>
             </div>
 
-        </div>
+        </div><!-- /.card-inner -->
     </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // ── Helpers ────────────────────────────────────────────────────
+            // ── Helpers ────────────────────────────────────────────────
             function sanitise(str) {
                 return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').trim();
             }
-
             function applyGuestName(name) {
                 if (!name) return;
-                const toLine = document.getElementById('guestToLine');
-                const toName = document.getElementById('guestToName');
-                toName.textContent = name.trim();
-                toLine.classList.remove('hidden');
+                document.getElementById('guestToName').textContent = name.trim();
+                document.getElementById('guestToLine').classList.remove('hidden');
             }
 
-            // ── Modal logic ────────────────────────────────────────────────
+            // ── Modal ──────────────────────────────────────────────────
             const modal      = document.getElementById('nameModal');
             const input      = document.getElementById('modalNameInput');
             const confirmBtn = document.getElementById('modalConfirmBtn');
@@ -361,23 +357,16 @@
                 modal.classList.add('hiding');
                 setTimeout(() => modal.remove(), 260);
             }
-
             confirmBtn.addEventListener('click', () => {
                 const val = input.value.trim();
                 if (val) applyGuestName(val);
                 closeModal();
             });
-
             skipBtn.addEventListener('click', closeModal);
-
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') confirmBtn.click();
-            });
-
-            // Auto-focus the input
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') confirmBtn.click(); });
             setTimeout(() => input.focus(), 120);
 
-            // ── URL param guest name (legacy support) ──────────────────────
+            // ── URL param guest (legacy) ───────────────────────────────
             const urlParams  = new URLSearchParams(window.location.search);
             const guestParam = urlParams.get('guest');
             if (guestParam) {
@@ -387,70 +376,75 @@
                 input.value = decoded;
             }
 
-            // ── QR Codes ───────────────────────────────────────────────────
-            const eventDetails = {
-                title:       'Wedding of Caitriona & Steven',
-                description: 'Save the date for the wedding of Caitriona & Steven. Rivervale Barn, Yateley.',
-                location:    'Rivervale Barn, Mill Lane, Yateley, Hampshire, GU46 7SS, UK',
-                startDate:   '20270325',
-                endDate:     '20270326'
-            };
+            // ── QR size: derive from actual rendered container ─────────
+            // Give DOM a tick to paint, then read the box size
+            function buildQR() {
+                const sampleBox = document.querySelector('.qr-container');
+                const boxPx = sampleBox
+                    ? Math.round(sampleBox.getBoundingClientRect().width - 12)
+                    : 100;
 
-            const qrSize = window.innerWidth >= 640 ? 156 : 128;
+                const eventDetails = {
+                    title:       'Wedding of Caitriona & Steven',
+                    description: 'Save the date for the wedding of Caitriona & Steven. Rivervale Barn, Yateley.',
+                    location:    'Rivervale Barn, Mill Lane, Yateley, Hampshire, GU46 7SS, UK',
+                    startDate:   '20270325',
+                    endDate:     '20270326'
+                };
 
-            const googleCalUrl = [
-                'https://calendar.google.com/calendar/render?action=TEMPLATE',
-                '&text='     + encodeURIComponent(eventDetails.title),
-                '&dates='    + eventDetails.startDate + '/' + eventDetails.endDate,
-                '&details='  + encodeURIComponent(eventDetails.description),
-                '&location=' + encodeURIComponent(eventDetails.location)
-            ].join('');
+                const googleCalUrl = [
+                    'https://calendar.google.com/calendar/render?action=TEMPLATE',
+                    '&text='     + encodeURIComponent(eventDetails.title),
+                    '&dates='    + eventDetails.startDate + '/' + eventDetails.endDate,
+                    '&details='  + encodeURIComponent(eventDetails.description),
+                    '&location=' + encodeURIComponent(eventDetails.location)
+                ].join('');
 
-            new QRCode(document.getElementById('googleQrCode'), {
-                text: googleCalUrl,
-                width: qrSize,
-                height: qrSize,
-                colorDark: '#2C3531',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.M
-            });
+                new QRCode(document.getElementById('googleQrCode'), {
+                    text: googleCalUrl, width: boxPx, height: boxPx,
+                    colorDark: '#2C3531', colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
 
-            const vEventString = [
-                'BEGIN:VCALENDAR',
-                'VERSION:2.0',
-                'PRODID:-//Caitriona and Steven Wedding//EN',
-                'CALSCALE:GREGORIAN',
-                'BEGIN:VEVENT',
-                'DTSTART;VALUE=DATE:' + eventDetails.startDate,
-                'DTEND;VALUE=DATE:'   + eventDetails.endDate,
-                'SUMMARY:'            + eventDetails.title,
-                'DESCRIPTION:'        + eventDetails.description,
-                'LOCATION:'           + eventDetails.location,
-                'STATUS:CONFIRMED',
-                'SEQUENCE:0',
-                'END:VEVENT',
-                'END:VCALENDAR'
-            ].join('\r\n');
+                const vEventString = [
+                    'BEGIN:VCALENDAR','VERSION:2.0',
+                    'PRODID:-//Caitriona and Steven Wedding//EN',
+                    'CALSCALE:GREGORIAN','BEGIN:VEVENT',
+                    'DTSTART;VALUE=DATE:' + eventDetails.startDate,
+                    'DTEND;VALUE=DATE:'   + eventDetails.endDate,
+                    'SUMMARY:'            + eventDetails.title,
+                    'DESCRIPTION:'        + eventDetails.description,
+                    'LOCATION:'           + eventDetails.location,
+                    'STATUS:CONFIRMED','SEQUENCE:0',
+                    'END:VEVENT','END:VCALENDAR'
+                ].join('\r\n');
 
-            new QRCode(document.getElementById('appleQrCode'), {
-                text: vEventString,
-                width: qrSize,
-                height: qrSize,
-                colorDark: '#2C3531',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.M
-            });
+                new QRCode(document.getElementById('appleQrCode'), {
+                    text: vEventString, width: boxPx, height: boxPx,
+                    colorDark: '#2C3531', colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
 
-            // ── Screenshot button ──────────────────────────────────────────
+            // ── Set QR box CSS variable from viewport ──────────────────
+            function setQrSize() {
+                const vh = window.innerHeight;
+                const vw = window.innerWidth;
+                // ~12% of the shorter dimension, clamped 72–140px
+                const size = Math.min(Math.max(Math.floor(Math.min(vh, vw) * 0.12), 72), 140);
+                document.documentElement.style.setProperty('--qr-box', size + 'px');
+            }
+            setQrSize();
+            setTimeout(buildQR, 50);
+
+            // ── Screenshot ─────────────────────────────────────────────
             const screenshotBtn = document.getElementById('screenshotBtn');
             const cardMain      = document.getElementById('cardMain');
 
             screenshotBtn.addEventListener('click', async () => {
                 screenshotBtn.classList.add('loading');
                 screenshotBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Capturing…';
-
                 await new Promise(r => setTimeout(r, 100));
-
                 try {
                     const canvas = await html2canvas(cardMain, {
                         backgroundColor: '#F4F1EA',
@@ -458,7 +452,6 @@
                         useCORS: true,
                         logging: false,
                         onclone: (doc) => {
-                            // html2canvas can't render backdrop-filter; substitute a solid bg
                             const cloned = doc.getElementById('cardMain');
                             if (cloned) {
                                 cloned.style.background = 'rgba(255,255,255,0.97)';
@@ -467,16 +460,12 @@
                             }
                         }
                     });
-
-                    // Build filename including guest name if present
                     const nameEl   = document.getElementById('guestToName');
                     const namePart = nameEl && nameEl.textContent.trim()
-                        ? '-' + nameEl.textContent.trim().replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_&]/g, '')
+                        ? '-' + nameEl.textContent.trim().replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_&]/g,'')
                         : '';
-                    const filename = `save-the-date${namePart}.png`;
-
                     const link = document.createElement('a');
-                    link.download = filename;
+                    link.download = `save-the-date${namePart}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                 } catch (err) {
@@ -492,3 +481,4 @@
     </script>
 </body>
 </html>
+
