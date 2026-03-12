@@ -19,22 +19,19 @@
     <!-- QRCode.js — generates QR codes entirely in-browser -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <!-- html2canvas — for screenshot functionality -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
                         serif: ['"Cormorant Garamond"', 'serif'],
-                        sans: ['Montserrat', 'sans-serif'],
+                        sans:  ['Montserrat', 'sans-serif'],
                     },
                     colors: {
                         wedding: {
-                            gold: '#C5A880',
-                            dark: '#2C3531',
-                            light: '#F4F1EA',
+                            gold:   '#C5A880',
+                            dark:   '#2C3531',
+                            light:  '#F4F1EA',
                             accent: '#8B5A5A'
                         }
                     }
@@ -44,7 +41,7 @@
     </script>
 
     <style>
-        /* ── Full viewport, no scroll ── */
+        /* ── Full viewport, zero scroll ── */
         html, body {
             height: 100%;
             overflow: hidden;
@@ -53,21 +50,21 @@
         body {
             background-color: #F4F1EA;
             background-image:
-                radial-gradient(at 0% 0%, hsla(28,100%,94%,1) 0, transparent 50%),
+                radial-gradient(at 0% 0%,   hsla(28,100%,94%,1) 0, transparent 50%),
                 radial-gradient(at 100% 100%, hsla(356,40%,90%,1) 0, transparent 50%);
             background-attachment: fixed;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1.5vh 1.5vw;
+            padding: 1vh 1.5vw;
             box-sizing: border-box;
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255,255,255,0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
         @keyframes fadeInUp {
@@ -93,7 +90,7 @@
             text-underline-offset: 3px;
         }
 
-        /* ── QR containers — sized via CSS variable set by JS ── */
+        /* ── QR containers ── */
         .qr-container {
             border: 1px solid rgba(197,168,128,0.3);
             padding: 6px;
@@ -103,8 +100,8 @@
             justify-content: center;
             border-radius: 10px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            width:  var(--qr-box, 100px);
-            height: var(--qr-box, 100px);
+            width:  var(--qr-box, 110px);
+            height: var(--qr-box, 110px);
             flex-shrink: 0;
         }
         .qr-container:hover {
@@ -113,49 +110,46 @@
         }
         .qr-container canvas,
         .qr-container img {
-            width: 100% !important;
+            width:  100% !important;
             height: 100% !important;
         }
 
-        /* ── Main card — fills available viewport height ── */
+        /* ── Main card ── */
         #cardMain {
             width: 100%;
-            max-width: 600px;
-            /* Fill almost all viewport height */
-            height: calc(100vh - 3vh);
-            max-height: 820px;
+            max-width: 620px;
+            height: calc(100vh - 2vh);
+            max-height: 860px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        /* Inner padding block — grows to fill card */
+        /* ── Inner layout: flex column, space-between so sections spread evenly ── */
         .card-inner {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: clamp(12px, 2.5vh, 32px) clamp(16px, 3vw, 48px);
+            /* Tighter vertical padding, generous horizontal */
+            padding: clamp(8px, 1.4vh, 20px) clamp(20px, 4vw, 56px);
             text-align: center;
         }
 
-        /* ── Fluid typography using clamp() ── */
-        .txt-eyebrow   { font-size: clamp(0.55rem, 1.1vh, 0.75rem); }
-        .txt-names     { font-size: clamp(2rem,   6vh,   4rem);   line-height: 1.1; }
-        .txt-to        { font-size: clamp(0.9rem, 2vh,   1.35rem); }
-        .txt-message   { font-size: clamp(0.75rem, 1.6vh, 1rem);  line-height: 1.5; }
-        .txt-date-big  { font-size: clamp(2.4rem, 7vh,   5rem);   line-height: 1; }
-        .txt-date-sub  { font-size: clamp(0.85rem, 1.8vh, 1.25rem); }
-        .txt-venue     { font-size: clamp(0.8rem,  1.7vh, 1.1rem); }
-        .txt-invites   { font-size: clamp(0.75rem, 1.5vh, 1rem);  }
-        .txt-cal-label { font-size: clamp(0.7rem,  1.4vh, 0.95rem); }
-        .txt-qr-label  { font-size: clamp(0.55rem, 1vh,   0.75rem); }
-        .txt-footer    { font-size: clamp(0.6rem,  1.1vh, 0.8rem); }
+        /* ── Typography — bigger than the last version, still fluid ── */
+        .txt-eyebrow   { font-size: clamp(0.6rem,  1.3vh,  0.8rem);  letter-spacing: 0.25em; }
+        .txt-names     { font-size: clamp(2.6rem,  7.5vh,  4.8rem);  line-height: 1.05; }
+        .txt-to        { font-size: clamp(1rem,    2.4vh,  1.5rem);  }
+        .txt-message   { font-size: clamp(0.85rem, 1.9vh,  1.1rem);  line-height: 1.45; }
+        .txt-date-big  { font-size: clamp(3rem,    9vh,    6rem);    line-height: 1; }
+        .txt-date-sub  { font-size: clamp(0.9rem,  2vh,    1.3rem);  }
+        .txt-venue     { font-size: clamp(0.9rem,  2vh,    1.2rem);  }
+        .txt-invites   { font-size: clamp(0.85rem, 1.8vh,  1.1rem);  }
+        .txt-cal-label { font-size: clamp(0.8rem,  1.6vh,  1rem);    }
+        .txt-qr-label  { font-size: clamp(0.6rem,  1.1vh,  0.8rem);  }
+        .txt-footer    { font-size: clamp(0.65rem, 1.2vh,  0.85rem); }
 
-        /* spacing helpers */
-        .gap-section { margin-bottom: clamp(4px, 1.2vh, 14px); }
-
-        /* Name input */
+        /* ── Name input ── */
         .name-input {
             border: 1px solid rgba(197,168,128,0.5);
             border-radius: 8px;
@@ -173,38 +167,7 @@
             box-shadow: 0 0 0 3px rgba(197,168,128,0.2);
         }
 
-        /* Screenshot button */
-        .screenshot-btn {
-            position: fixed;
-            bottom: 16px;
-            right: 16px;
-            background: #2C3531;
-            color: #C5A880;
-            border: 1px solid rgba(197,168,128,0.4);
-            border-radius: 50px;
-            padding: 8px 16px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.68rem;
-            font-weight: 500;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.18);
-            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-            z-index: 100;
-        }
-        .screenshot-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.22);
-            background: #3a4540;
-        }
-        .screenshot-btn:active { transform: translateY(0); }
-        .screenshot-btn.loading { opacity: 0.7; pointer-events: none; }
-
-        /* Modal */
+        /* ── Modal overlay ── */
         #nameModal {
             position: fixed;
             inset: 0;
@@ -239,40 +202,36 @@
         </div>
     </div>
 
-    <!-- ── Screenshot Button ── -->
-    <button class="screenshot-btn" id="screenshotBtn">
-        <i class="fa-regular fa-image"></i> Save as Image
-    </button>
-
     <!-- ── Main Card ── -->
     <main id="cardMain" class="glass-card rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
 
+        <!-- Gold top bar -->
         <div class="h-1.5 w-full bg-gradient-to-r from-wedding-gold via-wedding-accent to-wedding-gold opacity-80" style="flex-shrink:0;"></div>
 
         <div class="card-inner">
 
-            <!-- TOP: eyebrow + names + To line -->
+            <!-- SECTION 1 — eyebrow + names + To line + message -->
             <div>
                 <!-- Legacy URL-param guest container -->
-                <div id="guestGreetingContainer" class="hidden txt-eyebrow font-medium tracking-widest uppercase text-wedding-gold delay-1 animate-fade-in" style="margin-bottom:0.4em;">
+                <div id="guestGreetingContainer" class="hidden txt-eyebrow font-medium uppercase text-wedding-gold delay-1 animate-fade-in" style="margin-bottom:0.3em;">
                     For <span id="guestName" class="border-b border-wedding-gold pb-0.5"></span>
                 </div>
 
-                <p class="txt-eyebrow uppercase tracking-[0.3em] font-semibold text-gray-500 delay-1 animate-fade-in gap-section">
+                <p class="txt-eyebrow font-semibold uppercase text-gray-500 delay-1 animate-fade-in" style="margin-bottom:0.4em;">
                     Please Save the Date
                 </p>
 
-                <h1 class="txt-names font-serif delay-1 animate-fade-in gap-section">
+                <h1 class="txt-names font-serif delay-1 animate-fade-in" style="margin-bottom:0.25em;">
                     Caitriona <span class="text-wedding-gold italic font-light">&amp;</span> Steven
                 </h1>
 
                 <!-- To: line — left-aligned -->
-                <div id="guestToLine" class="hidden delay-1 animate-fade-in gap-section" style="text-align:left;">
+                <div id="guestToLine" class="hidden delay-1 animate-fade-in" style="text-align:left; margin-bottom:0.4em;">
                     <span class="txt-to font-serif italic" style="color:#C5A880;">To: </span><span id="guestToName" class="txt-to font-serif italic text-wedding-dark"></span>
                 </div>
 
                 <!-- Informal message -->
-                <div class="max-w-md mx-auto delay-1 animate-fade-in gap-section">
+                <div class="max-w-md mx-auto delay-1 animate-fade-in">
                     <p class="txt-message text-gray-600 font-serif italic leading-relaxed">
                         We're so excited to start our next chapter and would love for you to join us.
                         Please save the date to celebrate our wedding!
@@ -280,36 +239,34 @@
                 </div>
             </div>
 
-            <!-- MIDDLE: date -->
+            <!-- SECTION 2 — date -->
             <div class="relative delay-2 animate-fade-in" style="flex-shrink:0;">
                 <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-wedding-gold/10 rounded-full blur-2xl -z-10"></div>
-                <div class="txt-date-big font-serif text-wedding-accent" style="margin-bottom:0.15em;">25.03.27</div>
+                <div class="txt-date-big font-serif text-wedding-accent" style="margin-bottom:0.1em;">25.03.27</div>
                 <div class="txt-date-sub font-serif tracking-widest text-gray-700">25th March 2027</div>
             </div>
 
-            <!-- VENUE + invitations -->
-            <div>
-                <div class="delay-3 animate-fade-in gap-section">
+            <!-- SECTION 3 — venue + invitations -->
+            <div class="delay-3 animate-fade-in">
+                <div style="margin-bottom:0.3em;">
                     <a href="https://www.rivervalebarn.co.uk/" target="_blank" class="venue-link txt-venue tracking-wide font-medium inline-block transition-colors duration-300">
                         <i class="fa-solid fa-location-dot text-wedding-gold mr-1"></i>Rivervale Barn, Yateley
                     </a>
                 </div>
-                <div class="delay-3 animate-fade-in gap-section">
-                    <p class="txt-invites font-serif italic text-gray-500">Formal wedding invitations to follow</p>
-                </div>
+                <p class="txt-invites font-serif italic text-gray-500">Formal wedding invitations to follow</p>
             </div>
 
-            <!-- QR CODES -->
+            <!-- SECTION 4 — QR codes -->
             <div class="delay-4 animate-fade-in">
-                <p class="txt-cal-label font-serif italic text-gray-600" style="margin-bottom:0.6em;">Scan to add our day to your calendar</p>
+                <p class="txt-cal-label font-serif italic text-gray-600" style="margin-bottom:0.5em;">Scan to add our day to your calendar</p>
                 <div class="flex flex-row justify-center items-center gap-6 sm:gap-10">
-                    <div class="flex flex-col items-center gap-1.5">
+                    <div class="flex flex-col items-center gap-1">
                         <div class="qr-container shadow-sm" id="googleQrCode"></div>
                         <span class="txt-qr-label font-medium tracking-wider uppercase text-wedding-dark flex items-center gap-1.5">
                             <i class="fa-brands fa-google text-wedding-gold"></i> Google
                         </span>
                     </div>
-                    <div class="flex flex-col items-center gap-1.5">
+                    <div class="flex flex-col items-center gap-1">
                         <div class="qr-container shadow-sm" id="appleQrCode"></div>
                         <span class="txt-qr-label font-medium tracking-wider uppercase text-wedding-dark flex items-center gap-1.5">
                             <i class="fa-brands fa-apple text-wedding-gold"></i> Apple
@@ -318,8 +275,8 @@
                 </div>
             </div>
 
-            <!-- FOOTER -->
-            <div class="delay-4 animate-fade-in" style="border-top:1px solid #e5e7eb; padding-top: clamp(6px,1.2vh,14px); display:flex; flex-direction:column; gap:4px;">
+            <!-- SECTION 5 — footer -->
+            <div class="delay-4 animate-fade-in" style="border-top:1px solid #e5e7eb; padding-top:clamp(5px,1vh,12px); display:flex; flex-direction:column; gap:3px;">
                 <a href="#" class="txt-footer text-wedding-gold hover:text-wedding-accent transition-colors font-medium tracking-widest uppercase inline-flex items-center justify-center gap-2">
                     <i class="fa-solid fa-globe"></i> Visit Our Wedding Website
                 </a>
@@ -339,7 +296,7 @@
 
             // ── Helpers ────────────────────────────────────────────────
             function sanitise(str) {
-                return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').trim();
+                return str.replace(/</g,'&lt;').replace(/>/g,'&gt;').trim();
             }
             function applyGuestName(name) {
                 if (!name) return;
@@ -376,13 +333,17 @@
                 input.value = decoded;
             }
 
-            // ── QR size: derive from actual rendered container ─────────
-            // Give DOM a tick to paint, then read the box size
+            // ── QR codes ───────────────────────────────────────────────
+            function setQrSize() {
+                const size = Math.min(Math.max(Math.floor(Math.min(window.innerHeight, window.innerWidth) * 0.13), 80), 150);
+                document.documentElement.style.setProperty('--qr-box', size + 'px');
+            }
+
             function buildQR() {
                 const sampleBox = document.querySelector('.qr-container');
                 const boxPx = sampleBox
                     ? Math.round(sampleBox.getBoundingClientRect().width - 12)
-                    : 100;
+                    : 110;
 
                 const eventDetails = {
                     title:       'Wedding of Caitriona & Steven',
@@ -426,57 +387,8 @@
                 });
             }
 
-            // ── Set QR box CSS variable from viewport ──────────────────
-            function setQrSize() {
-                const vh = window.innerHeight;
-                const vw = window.innerWidth;
-                // ~12% of the shorter dimension, clamped 72–140px
-                const size = Math.min(Math.max(Math.floor(Math.min(vh, vw) * 0.12), 72), 140);
-                document.documentElement.style.setProperty('--qr-box', size + 'px');
-            }
             setQrSize();
             setTimeout(buildQR, 50);
-
-            // ── Screenshot ─────────────────────────────────────────────
-            const screenshotBtn = document.getElementById('screenshotBtn');
-            const cardMain      = document.getElementById('cardMain');
-
-            screenshotBtn.addEventListener('click', async () => {
-                screenshotBtn.classList.add('loading');
-                screenshotBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Capturing…';
-                await new Promise(r => setTimeout(r, 100));
-                try {
-                    const canvas = await html2canvas(cardMain, {
-                        backgroundColor: '#F4F1EA',
-                        scale: 2,
-                        useCORS: true,
-                        logging: false,
-                        onclone: (doc) => {
-                            const cloned = doc.getElementById('cardMain');
-                            if (cloned) {
-                                cloned.style.background = 'rgba(255,255,255,0.97)';
-                                cloned.style.backdropFilter = 'none';
-                                cloned.style.webkitBackdropFilter = 'none';
-                            }
-                        }
-                    });
-                    const nameEl   = document.getElementById('guestToName');
-                    const namePart = nameEl && nameEl.textContent.trim()
-                        ? '-' + nameEl.textContent.trim().replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_&]/g,'')
-                        : '';
-                    const link = document.createElement('a');
-                    link.download = `save-the-date${namePart}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                } catch (err) {
-                    console.error('Screenshot failed:', err);
-                    alert("Screenshot failed. Try your browser's built-in screenshot instead.");
-                } finally {
-                    screenshotBtn.classList.remove('loading');
-                    screenshotBtn.innerHTML = '<i class="fa-regular fa-image"></i> Save as Image';
-                }
-            });
-
         });
     </script>
 </body>
